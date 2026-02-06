@@ -1,0 +1,38 @@
+# === Python ===
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# === 敏感文件（绝对不能提交！） ===
+.env
+.env.*
+*.pem
+*.key
+
+# === 数据与存储 ===
+chroma_db_store/
+vector_store/
+knowledge_base/
+*.sqlite3
+*.db
+
+# === 日志 ===
+*.log
+
+# === 编辑器/IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === 系统文件 ===
+Thumbs.db
+.DS_Store

@@ -1,0 +1,274 @@
+version: v1.0.0
+categories:
+  STREAMING:
+    - PUSH_FAIL
+    - PUSH_TIMEOUT
+    - PUSH_DISCONNECT
+    - CONFIG_ERROR
+  PLAYBACK:
+    - PLAY_FAIL
+    - BLACK_SCREEN
+    - LOAD_TIMEOUT
+  SCREENSHOT_RECORD:
+    - SNAPSHOT_FAIL
+    - RECORD_FAIL
+  PERFORMANCE:
+    - STUTTER
+    - HIGH_LATENCY
+    - CPU_HIGH
+  AUDIO_VIDEO:
+    - QUALITY_ISSUE
+    - NO_AUDIO
+    - AV_DESYNC
+  NETWORK:
+    - CONNECT_FAIL
+    - DNS_FAIL
+    - PACKET_LOSS
+  ACCOUNT_PERMISSION:
+    - AUTH_FAIL
+    - TOKEN_EXPIRED
+    - NO_PERMISSION
+  OTHER:
+    - OTHER
+labels:
+  - LIVE
+  - VOD
+  - NETWORK_SUSPECT
+  - CLIENT_SUSPECT
+  - SERVER_SUSPECT
+short_labels:
+  l1:
+    STREAMING: 推流
+    PLAYBACK: 播放
+    SCREENSHOT_RECORD: 录屏
+    PERFORMANCE: 性能
+    AUDIO_VIDEO: 音视频
+    NETWORK: 网络
+    ACCOUNT_PERMISSION: 权限
+    OTHER: 其他
+  l2:
+    PUSH_FAIL: 推流失败
+    PUSH_TIMEOUT: 推流超时
+    PUSH_DISCONNECT: 推流断开
+    CONFIG_ERROR: 配置错误
+    PLAY_FAIL: 播放失败
+    BLACK_SCREEN: 黑屏
+    LOAD_TIMEOUT: 加载超时
+    SNAPSHOT_FAIL: 截图失败
+    RECORD_FAIL: 录制失败
+    STUTTER: 卡顿
+    HIGH_LATENCY: 高延迟
+    CPU_HIGH: CPU高
+    QUALITY_ISSUE: 画质问题
+    NO_AUDIO: 无声音
+    AV_DESYNC: 音画不同步
+    CONNECT_FAIL: 连接失败
+    DNS_FAIL: DNS问题
+    PACKET_LOSS: 丢包
+    AUTH_FAIL: 鉴权失败
+    TOKEN_EXPIRED: 令牌过期
+    NO_PERMISSION: 无权限
+    OTHER: 其他
+rules:
+  - id: streaming_push_fail
+    l1: STREAMING
+    l2: PUSH_FAIL
+    keywords: ["推流失败", "推不上", "推不上去", "推流不上", "推流报错", "rtmp", "rtc"]
+    labels: ["LIVE"]
+  - id: playback_fail
+    l1: PLAYBACK
+    l2: PLAY_FAIL
+    keywords: ["播放失败", "播放不了", "无法播放", "黑屏"]
+    labels: ["VOD"]
+  - id: screenshot_record
+    l1: SCREENSHOT_RECORD
+    l2: RECORD_FAIL
+    keywords: ["截图失败", "录制失败", "录屏失败", "录制不了", "截图不了"]
+    labels: []
+  - id: performance_stutter
+    l1: PERFORMANCE
+    l2: STUTTER
+    keywords: ["卡顿", "很卡", "延迟", "慢", "顿", "掉帧"]
+    labels: []
+  - id: audio_video_quality
+    l1: AUDIO_VIDEO
+    l2: QUALITY_ISSUE
+    keywords: ["无声", "没声音", "有杂音", "花屏", "不同步", "回声"]
+    labels: []
+  - id: network_issue
+    l1: NETWORK
+    l2: CONNECT_FAIL
+    keywords: ["网络", "连不上", "连接失败", "断线", "丢包", "dns"]
+    labels: ["NETWORK_SUSPECT"]
+  - id: account_permission
+    l1: ACCOUNT_PERMISSION
+    l2: AUTH_FAIL
+    keywords: ["鉴权失败", "token", "无权限", "权限不足", "登录失败", "403", "401"]
+    labels: []
+severity_rules:
+  - pattern: "(数据丢失|全量不可用|全挂|崩溃)"
+    severity: S4
+  - pattern: "(无法使用|完全不可用|严重故障|大面积|全部用户)"
+    severity: S3
+  - pattern: "(故障|异常|影响|失败|报错)"
+    severity: S2
+default:
+  l1: OTHER
+  l2: OTHER
+
+# ============================================================
+# 四维度分类规则（半日高频复盘模式）
+# 优先级：产品缺陷 > 问题反馈 > 客户需求 > 使用咨询
+# ============================================================
+
+issue_types:
+  # 1. 产品缺陷：确认为系统Bug或程序逻辑错误
+  - id: product_defect
+    type: 产品缺陷
+    priority: 1
+    keywords:
+      - "bug"
+      - "故障"
+      - "异常"
+      - "崩溃"
+      - "报错"
+      - "失败"
+      - "无法使用"
+      - "不能用"
+      - "闪退"
+      - "卡死"
+      - "宕机"
+      - "500错误"
+      - "404"
+      - "数据丢失"
+      - "数据错误"
+      - "程序错误"
+      - "系统错误"
+      - "白屏"
+      - "黑屏"
+      - "死循环"
+    description: "明确的系统故障、程序错误、数据异常"
+
+  # 2. 问题反馈：用户遇到的使用障碍或突发异常
+  - id: problem_feedback
+    type: 问题反馈
+    priority: 2
+    keywords:
+      - "反馈"
+      - "打不开"
+      - "用不了"
+      - "卡住"
+      - "没反应"
+      - "加载慢"
+      - "很慢"
+      - "转圈"
+      - "进不去"
+      - "显示异常"
+      - "不好用"
+      - "不方便"
+      - "不合理"
+      - "体验差"
+      - "有问题"
+      - "出问题"
+      - "出错"
+    description: "使用过程中遇到的障碍，但不一定是Bug"
+
+  # 3. 客户需求：对功能扩展、业务场景的期望或建议
+  - id: product_requirement
+    type: 客户需求
+    priority: 3
+    keywords:
+      - "需求"
+      - "希望"
+      - "想要"
+      - "增加"
+      - "新增"
+      - "支持"
+      - "能否"
+      - "能不能"
+      - "需要"
+      - "优化"
+      - "改进"
+      - "建议"
+      - "期望"
+      - "可不可以"
+      - "有没有"
+      - "什么时候"
+      - "计划"
+      - "规划"
+    description: "用户对产品功能的扩展期望或改进建议"
+
+  # 4. 使用咨询：关于操作方法、配置流程的简单询问
+  - id: usage_consult
+    type: 使用咨询
+    priority: 4
+    keywords:
+      - "怎么用"
+      - "如何"
+      - "使用"
+      - "教程"
+      - "指导"
+      - "配置"
+      - "怎么设置"
+      - "文档"
+      - "说明"
+      - "咨询"
+      - "怎么操作"
+      - "操作方法"
+      - "在哪里"
+      - "哪里找"
+      - "请问"
+      - "麻烦问下"
+      - "怎么弄"
+      - "步骤"
+    description: "用户询问操作指引，无故障描述"
+
+default_issue_type: 问题反馈
+
+# ============================================================
+# 情绪关键词（辅助流失风险判断）
+# ============================================================
+emotion_keywords:
+  negative_high:  # 高风险负面词
+    - "投诉"
+    - "报警"
+    - "换掉"
+    - "不用了"
+    - "算了"
+    - "垃圾"
+    - "骗子"
+    - "坑"
+    - "烂"
+    - "废"
+  negative_medium:  # 中等负面词
+    - "失望"
+    - "不满"
+    - "差劲"
+    - "无语"
+    - "生气"
+    - "着急"
+    - "焦虑"
+    - "崩溃"
+  positive:  # 正面词
+    - "感谢"
+    - "谢谢"
+    - "不错"
+    - "好用"
+    - "满意"
+    - "点赞"
+    - "厉害"
+
+# ============================================================
+# 流失风险触发词
+# ============================================================
+churn_risk_keywords:
+  - "换"
+  - "不续费"
+  - "退款"
+  - "投诉"
+  - "12315"
+  - "工商"
+  - "律师"
+  - "起诉"
+  - "曝光"
+  - "媒体"
